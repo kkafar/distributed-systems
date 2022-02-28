@@ -1,0 +1,14 @@
+# ios specific
+.DS_Store
+
+# packed solutions
+*.zip
+
+# taks & reports
+*.pdf
+
+# compiled 
+out/
+
+# explitictly marked as local
+*local.*
