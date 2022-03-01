@@ -12,3 +12,6 @@ out/
 
 # explitictly marked as local
 *local.*
+
+# class files
+*.class
