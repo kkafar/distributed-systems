@@ -1,2 +1,2 @@
-rootProject.name = "chat-application-client"
+rootProject.name = "client-chat-app"
 
