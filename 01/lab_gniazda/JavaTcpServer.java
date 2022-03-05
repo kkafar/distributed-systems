@@ -7,40 +7,40 @@ import java.net.Socket;
 
 public class JavaTcpServer {
 
-    public static void main(String[] args) throws IOException {
+  public static void main(String[] args) throws IOException {
 
-        System.out.println("JAVA TCP SERVER");
-        int portNumber = 12345;
-        ServerSocket serverSocket = null;
+    System.out.println("JAVA TCP SERVER");
+    int portNumber = 12345;
+    ServerSocket serverSocket = null;
 
-        try {
-            // create socket
-            serverSocket = new ServerSocket(portNumber);
+    try {
+      // create socket
+      serverSocket = new ServerSocket(portNumber);
 
-            while(true){
+      while(true){
 
-                // accept client
-                Socket clientSocket = serverSocket.accept();
-                System.out.println("client connected");
+        // accept client
+        Socket clientSocket = serverSocket.accept();
+        System.out.println("client connected");
 
-                // in & out streams
-                PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
-                BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
+        // in & out streams
+        PrintWriter out = new PrintWriter(clientSocket.getOutputStream(), true);
+        BufferedReader in = new BufferedReader(new InputStreamReader(clientSocket.getInputStream()));
 
-                // read msg, send response
-                String msg = in.readLine();
-                System.out.println("received msg: " + msg);
-                out.println("Pong Java Tcp");
+        // read msg, send response
+        String msg = in.readLine();
+        System.out.println("received msg: " + msg);
+        out.println("Pong Java Tcp");
 
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally{
-            if (serverSocket != null){
-                serverSocket.close();
-            }
-        }
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
     }
+    finally{
+      if (serverSocket != null){
+        serverSocket.close();
+      }
+    }
+  }
 
 }
