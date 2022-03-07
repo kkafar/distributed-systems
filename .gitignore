@@ -18,3 +18,7 @@ out/
 
 # intellij
 .idea/
+
+# dependencies
+*.jar
+
