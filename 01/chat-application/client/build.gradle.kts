@@ -14,6 +14,13 @@ repositories {
   mavenCentral()
 }
 
+println("Before configuring run task")
+
+tasks.getByName<JavaExec>("run") {
+  println("setting up run task")
+  standardInput = System.`in`
+}
+
 dependencies {
   implementation("org.apache.logging.log4j:log4j-api:2.17.2")
   implementation("org.apache.logging.log4j:log4j-core:2.17.2")
@@ -23,5 +30,6 @@ dependencies {
 }
 
 tasks.getByName<Test>("test") {
+  println("Inside test task")
   useJUnitPlatform()
 }

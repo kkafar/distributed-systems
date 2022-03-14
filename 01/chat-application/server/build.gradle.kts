@@ -1,5 +1,10 @@
 plugins {
   java
+  application
+}
+
+application {
+  mainClass.set("kkafara.Main")
 }
 
 group = "kkafara"
@@ -19,4 +24,8 @@ dependencies {
 
 tasks.getByName<Test>("test") {
   useJUnitPlatform()
+}
+
+tasks.getByName<JavaExec>("run") {
+  standardInput = System.`in`
 }
