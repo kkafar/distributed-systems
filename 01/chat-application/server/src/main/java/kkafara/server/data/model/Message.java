@@ -10,7 +10,7 @@ public class Message {
 
   public static final int ID_SIZE = 32;
   public static final int CONTENT_SIZE = 8;
-  public static final int MAX_CONTENT_SIZE = 512;
+  public static final int MAX_CONTENT_SIZE = 768;
 
   private final int mLength;
   private final User mUser;
@@ -67,7 +67,7 @@ public class Message {
     }
     String userName = new String(idBuff).strip();
 
-//    System.out.println(userName);
+    System.out.println(userName);
 
     for (int i = 0; i < CONTENT_SIZE; ++i) {
       lengthBuff[i] = message[i + ID_SIZE];
@@ -77,9 +77,10 @@ public class Message {
     try {
       contentLength = Integer.parseInt(new String(lengthBuff).strip());
     } catch (NumberFormatException exception) {
+      exception.printStackTrace();
     }
 
-//    System.out.println(contentLength);
+    System.out.println(contentLength);
 
     if (contentLength > MAX_CONTENT_SIZE || contentLength < 0) {
       // TODO: handle this case

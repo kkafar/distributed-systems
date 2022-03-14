@@ -33,6 +33,8 @@ public class TCPMessageReceiver implements MessageReceiver {
       } else if (bytesRead == -1) {
         mLogger.warn("No more data in input stream. Most likely client disconnected");
         return null;
+      } else {
+        mLogger.debug("Bytes read: " + bytesRead);
       }
       return Message.parseFromCharArray(mBuffer.array());
     } catch (IOException exception) {

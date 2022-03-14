@@ -8,9 +8,11 @@ public class UserInputParser {
   }
 
   public static MessageConfigurations resolveMessageConfiguration(String input) {
+    if (input.length() == 0) return MessageConfigurations.TCP;
+
     if (input.charAt(0) == 'U') {
       return MessageConfigurations.UDP;
-    } else if (input.charAt(0) == 'M') {
+    } else if (input.charAt(0) == ('M')) {
       return MessageConfigurations.MULTICAST;
     } else {
       return MessageConfigurations.TCP;

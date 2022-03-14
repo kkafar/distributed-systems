@@ -84,13 +84,18 @@ public class Client {
         while (true) {
           String input = getUserInput();
           clearScreen();
+          System.out.println("User input:");
+          System.out.println(input);
 
           message = new Message(mUser, input);
 
 
           switch (UserInputParser.resolveMessageConfiguration(input)) {
-            case TCP -> handleTCPMessage(message);
+            case TCP -> {
+              handleTCPMessage(message);
+            }
             case UDP -> {
+              System.out.println("UDP message");
               input = input.substring(1);
               message = new Message(mUser, input);
               handleUDPMessage(message, datagramSocket);
@@ -125,16 +130,17 @@ public class Client {
 
   private String getUserInput() throws IOException {
     System.out.print(PROMPT);
-    StringBuilder builder = new StringBuilder();
-    mStdInReader.lines().takeWhile(line -> {
-      try {
-        return mStdInReader.ready();
-      } catch (IOException e) {
-        e.printStackTrace();
-      }
-      return false;
-    }).forEach(builder::append);
-    return builder.toString();
+//    StringBuilder builder = new StringBuilder();
+//    mStdInReader.lines().takeWhile(line -> {
+//      try {
+//        return mStdInReader.ready();
+//      } catch (IOException e) {
+//        e.printStackTrace();
+//      }
+//      return false;
+//    }).forEach(builder::append);
+//    return builder.toString();
+    return mStdInReader.readLine();
   }
 
   private void handleMulticastMessage(Message message) {
