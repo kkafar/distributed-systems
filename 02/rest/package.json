@@ -1,0 +1,19 @@
+{
+  "name": "com.kkafara.distsys.rest",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kkafar/distributed-systems.git"
+  },
+  "author": "Kacper Kafara",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kkafar/distributed-systems/issues"
+  },
+  "homepage": "https://github.com/kkafar/distributed-systems#readme"
+}
