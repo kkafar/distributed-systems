@@ -3,3 +3,9 @@ dist/
 
 # npm
 node_modules/
+
+# files explicitly designated as local
+local.*
+
+# env variables
+.envrc
