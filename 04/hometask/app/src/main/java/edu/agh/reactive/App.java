@@ -11,8 +11,10 @@ import akka.stream.*;
 import akka.stream.javadsl.*;
 import edu.agh.reactive.greetings.GreeterMain;
 import edu.agh.reactive.math.MathActor;
+import scala.Int;
 
 
+import javax.annotation.processing.Completion;
 import java.io.IOException;
 import java.util.List;
 import java.util.concurrent.CompletionStage;
@@ -20,18 +22,9 @@ import java.util.concurrent.CompletionStage;
 public class App {
   public static void main(String[] args) throws InterruptedException {
 
-    task2();
+//    task2();
+    task3();
 
-//    try {
-//      System.out.println(">>> Press ENTER to exit <<<");
-//      System.in.read();
-//    } catch (IOException ignored) {
-//    } finally {
-////            greeterMain.terminate();
-////            mathContext.terminate();
-////            helloSystem.terminate();
-//      streamSystem.terminate();
-//    }
   }
 
   public static void task2() {
@@ -68,35 +61,38 @@ public class App {
     final Materializer materializer = Materializer.createMaterializer(streamSystem);
 
     final Source<Integer, NotUsed> source = Source.range(1, 100);
-    final Sink<List<Pair<Integer, Integer>>, CompletionStage<Pair<Integer, Integer>>> sink = Sink.head(); // TODO
+    final Sink<String, CompletionStage<Done>> sink = Sink.foreach(System.out::println); // TODO
     final Flow<Integer, Integer, NotUsed> addOneFlow = Flow.fromFunction((Integer n) -> n + 1);
     final Flow<Integer, Integer, NotUsed> multiplyByTenFlow = Flow.fromFunction((Integer n) -> n * 10);
-
-    // task 4 - graph dsl
-    // how to create
-    // step 1 - frame
-//    final Graph<ClosedShape, CompletionStage<Done>> specialGraph = GraphDSL.create(sink , (builder, out)-> {
-//    //step 2 - building blocks
-//    builder.add(sink);
-//    final Outlet<Integer> dslSource = builder.add(source).out();
-//    // step 3 - glue components
-//        builder.from(dslSource).via(builder.add(flow)).to(out);
-//    // step 4 closing
-//        return ClosedShape.getInstance();
-//        });
+    final Flow<Integer, Integer, NotUsed> integerIdentityFlow = Flow.fromFunction((Integer n) -> n);
+    final Flow<Pair<Integer, Integer>, String, NotUsed> stringifyPairFlow = Flow.fromFunction(
+        (Pair<Integer, Integer> pair) -> pair.first().toString() + ", " + pair.second().toString()
+    );
 
     RunnableGraph.fromGraph(
         GraphDSL.create(
             sink,
             (builder, out) -> {
               final UniformFanOutShape<Integer, Integer> broadcast = builder.add(Broadcast.create(2));
-              final FanInShape2<Integer, Integer, Pair<Integer, Integer>> zip = builder.add(Zip.create());
-              final Outlet<>
+              final FanInShape2<Integer, Integer, Pair<Integer, Integer>> zipper = builder.add(Zip.create());
+
+              final Outlet<Integer> dataSource = builder.add(source).out();
+
+              // source to broadcast
+              builder.from(dataSource).via(builder.add(integerIdentityFlow)).viaFanOut(broadcast);
+
+              // broadcast to zipper
+              builder.from(broadcast).via(builder.add(addOneFlow)).toInlet(zipper.in0());
+              builder.from(broadcast).via(builder.add(multiplyByTenFlow)).toInlet(zipper.in1());
+
+              // zipper to sink
+              builder.from(zipper.out()).via(builder.add(stringifyPairFlow)).to(out);
+
+              return ClosedShape.getInstance();
             }
         )
     ).run(materializer);
 
-//    RunnableGraph.fromGraph(specialGraph).run(materializer);
     try {
       System.out.println(">>> Press ENTER to exit <<<");
       System.in.read();
