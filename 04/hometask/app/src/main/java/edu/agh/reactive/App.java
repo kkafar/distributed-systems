@@ -6,6 +6,7 @@ import akka.Done;
 import akka.NotUsed;
 import akka.actor.typed.ActorSystem;
 import akka.actor.typed.javadsl.Behaviors;
+import akka.japi.Pair;
 import akka.stream.*;
 import akka.stream.javadsl.*;
 import edu.agh.reactive.greetings.GreeterMain;
@@ -13,102 +14,95 @@ import edu.agh.reactive.math.MathActor;
 
 
 import java.io.IOException;
+import java.util.List;
 import java.util.concurrent.CompletionStage;
 
 public class App {
-    public static void main(String[] args) throws InterruptedException {
-        //////////////////////////////
-        // TASK 0- uncomment code lines + also in try-catch section (grretings)
-        //#actor-system
-//        final ActorSystem<GreeterMain.SayHello> greeterMain = ActorSystem.create(GreeterMain.create(), "akka-lab");
-        //#actor-system
+  public static void main(String[] args) throws InterruptedException {
 
-        //#main-send-messages
-//        greeterMain.tell(new GreeterMain.SayHello("Some-test"));
-        //#main-send-messages
+    task2();
 
-        //TASK 1 - hello
-        // create actor system
+//    try {
+//      System.out.println(">>> Press ENTER to exit <<<");
+//      System.in.read();
+//    } catch (IOException ignored) {
+//    } finally {
+////            greeterMain.terminate();
+////            mathContext.terminate();
+////            helloSystem.terminate();
+//      streamSystem.terminate();
+//    }
+  }
 
-//        final ActorSystem<String> helloSystem =
-//                ActorSystem.create(HelloActor.create(), "helloActor");
+  public static void task2() {
+    final ActorSystem streamSystem = ActorSystem.create(Behaviors.empty(), "streams");
+    final Materializer materializer = Materializer.createMaterializer(streamSystem);
 
-        // send messages
-//        helloSystem.tell("hello world");
+    final Source<Integer, NotUsed> source = Source.range(1, 100);
+    final Flow<Integer, String, NotUsed> flow = Flow.fromFunction(Object::toString);
+    final Flow<Integer, String, NotUsed> debugFlow = Flow.fromFunction((Integer n) -> {
+      System.out.println("Value in debugFlow: " + n);
+      return n.toString();
+    });
+    final Sink<String, CompletionStage<Done>> sink = Sink.foreach(System.out::println);
+    final Sink<String, CompletionStage<Done>> slowSink = Sink.foreach(value -> {
+      Thread.sleep(1000);
+      System.out.println("Value in slowSink: " + value);
+    });
+    final RunnableGraph<NotUsed> runnableGraph = source
+        .buffer(16, OverflowStrategy.dropHead()) // TODO: change strategy here
+        .via(debugFlow).async().to(slowSink);
+    runnableGraph.run(materializer);
 
-
-        //TASK 2 - math operations
-//        final ActorSystem<MathActor.MathCommand> mathContext =
-//                ActorSystem.create(MathActor.create(), "actorMath");
-//        System.out.println("math main: actor system ready");
-
-
-        // send messages
-//        mathContext.tell(new MathActor.MathCommandAdd(5, 3));
-//        mathContext.tell(new MathActor.MathCommandMultiply(5, 3, null));
-//        system.tell(new MathActor.MathCommandMultiply(5, 2, null));
-//        system.tell(new MathActor.MathCommandDivide(15, 3, null));
-//        system.tell(new MathActor.MathCommandDivide(15, 5, null));
-//        mathContext.tell(new MathActor.MathCommandMultiply(5, 2, null));
-//        mathContext.tell(new MathActor.MathCommandDivide(15, 3, null));
-//        mathContext.tell(new MathActor.MathCommandDivide(15, 5, null));
-//
-//        mathContext.tell(new MathActor.MathCommandDivide(15, 0, null));
-//        Thread.sleep(2000);
-//
-//        System.out.println("Math main: sending second package of messages");
-//        mathContext.tell(new MathActor.MathCommandMultiply(5, 3, null));
-//        mathContext.tell(new MathActor.MathCommandMultiply(5, 2, null));
-//        mathContext.tell(new MathActor.MathCommandDivide(15, 3, null));
-//        mathContext.tell(new MathActor.MathCommandDivide(15, 5, null));
-//        System.out.println("Math main: messages send");
-
-
-
-        /// TASK 3 - Streams ilustration
-        final ActorSystem streamSystem = ActorSystem.create(Behaviors.empty(), "streams");
-        final Materializer materializer = Materializer.createMaterializer(streamSystem);
-        // case 1
-        final Source<Integer, NotUsed> source = Source.range(1, 100);
-        final Flow<Integer, String, NotUsed> flow = Flow.fromFunction(Object::toString);
-        final Flow<Integer, String, NotUsed> debugFlow = Flow.fromFunction((Integer n) -> {
-            System.out.println("Value in debugFlow: " + n);
-            return n.toString();
-        });
-        final Sink<String, CompletionStage<Done>> sink = Sink.foreach(System.out::println);
-        final Sink<String, CompletionStage<Done>> slowSink = Sink.foreach(value -> {
-            Thread.sleep(1000);
-            System.out.println("Value in slowSink: " + value);
-        });
-        final RunnableGraph<NotUsed> runnableGraph = source
-            .buffer(16, OverflowStrategy.dropHead())
-            .via(debugFlow).async().to(slowSink);
-        runnableGraph.run(materializer);
-
-        // task 4 - graph dsl
-        // how to create
-        // step 1 - frame
-        //final Graph<ClosedShape, CompletionStage<Done>> specialGraph = GraphDSL.create(sink , (builder, out)-> {
-            //step 2 - building blocks
-                //builder.add(sink);
-            //final Outlet<Integer> dslSource = builder.add(source).out();
-            // step 3 - glue components
-            //    builder.from(dslSource).via(builder.add(flow)).to(out);
-            // step 4 closing
-            //    return ClosedShape.getInstance();
-            //    });
-
-//        RunnableGraph.fromGraph(specialGraph).run(materializer);
-
-        try {
-            System.out.println(">>> Press ENTER to exit <<<");
-            System.in.read();
-        } catch (IOException ignored) {
-        } finally {
-//            greeterMain.terminate();
-//            mathContext.terminate();
-//            helloSystem.terminate();
-            streamSystem.terminate();
-        }
+    try {
+      System.out.println(">>> Press ENTER to exit <<<");
+      System.in.read();
+    } catch (IOException ignored) {
+    } finally {
+      streamSystem.terminate();
     }
+  }
+
+  public static void task3() {
+    final ActorSystem streamSystem = ActorSystem.create(Behaviors.empty(), "graph");
+    final Materializer materializer = Materializer.createMaterializer(streamSystem);
+
+    final Source<Integer, NotUsed> source = Source.range(1, 100);
+    final Sink<List<Pair<Integer, Integer>>, CompletionStage<Pair<Integer, Integer>>> sink = Sink.head(); // TODO
+    final Flow<Integer, Integer, NotUsed> addOneFlow = Flow.fromFunction((Integer n) -> n + 1);
+    final Flow<Integer, Integer, NotUsed> multiplyByTenFlow = Flow.fromFunction((Integer n) -> n * 10);
+
+    // task 4 - graph dsl
+    // how to create
+    // step 1 - frame
+//    final Graph<ClosedShape, CompletionStage<Done>> specialGraph = GraphDSL.create(sink , (builder, out)-> {
+//    //step 2 - building blocks
+//    builder.add(sink);
+//    final Outlet<Integer> dslSource = builder.add(source).out();
+//    // step 3 - glue components
+//        builder.from(dslSource).via(builder.add(flow)).to(out);
+//    // step 4 closing
+//        return ClosedShape.getInstance();
+//        });
+
+    RunnableGraph.fromGraph(
+        GraphDSL.create(
+            sink,
+            (builder, out) -> {
+              final UniformFanOutShape<Integer, Integer> broadcast = builder.add(Broadcast.create(2));
+              final FanInShape2<Integer, Integer, Pair<Integer, Integer>> zip = builder.add(Zip.create());
+              final Outlet<>
+            }
+        )
+    ).run(materializer);
+
+//    RunnableGraph.fromGraph(specialGraph).run(materializer);
+    try {
+      System.out.println(">>> Press ENTER to exit <<<");
+      System.in.read();
+    } catch (IOException ignored) {
+    } finally {
+      streamSystem.terminate();
+    }
+  }
 }
