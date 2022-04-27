@@ -9,6 +9,22 @@
 
 # compiled 
 out/
+build/
+bin/
 
 # explitictly marked as local
 *local.*
+
+# class files
+*.class
+
+# intellij
+.idea/
+
+# dependencies
+*.jar
+
+Kafara_Kacper_*
+
+oswiadczenie.txt
+
