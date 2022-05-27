@@ -81,5 +81,5 @@ protobuf {
 
 application {
     // Define the main class for the application.
-    mainClass.set("com.kkafara.server.App")
+    mainClass.set("com.kkafara.App")
 }
