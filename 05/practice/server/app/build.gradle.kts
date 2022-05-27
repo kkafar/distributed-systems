@@ -26,6 +26,7 @@ tasks.getByName<JavaExec>("run") {
 repositories {
     mavenCentral()
     maven {
+        name = "GitHubPackages"
         url = uri("https://maven.pkg.github.com/kkafar/result-type")
         credentials {
             username = System.getenv("GITHUB_USERNAME")
@@ -43,9 +44,11 @@ dependencies {
 
     implementation("com.google.guava:guava:30.1.1-jre")
 
-    runtimeOnly("io.grpc:grpc-netty-shaded:1.45.1")
-    implementation("io.grpc:grpc-protobuf:1.45.1")
-    implementation("io.grpc:grpc-stub:1.45.1")
+    implementation("io.grpc:grpc-protobuf:1.46.0")
+    implementation("io.grpc:grpc-stub:1.46.0")
+    implementation("io.netty:netty-all:4.1.77.Final")
+    implementation("io.grpc:grpc-netty-shaded:1.46.0")
+
     compileOnly("org.apache.tomcat:annotations-api:6.0.53")
 
     implementation("org.apache.logging.log4j:log4j-api:2.17.2")

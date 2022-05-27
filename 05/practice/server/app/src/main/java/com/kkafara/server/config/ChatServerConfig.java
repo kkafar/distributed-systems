@@ -1,4 +1,4 @@
-package com.kkafara.server;
+package com.kkafara.server.config;
 
 public class ChatServerConfig {
 
@@ -6,7 +6,7 @@ public class ChatServerConfig {
 
   public final String address;
 
-  private ChatServerConfig(int port, final String address) {
+  public ChatServerConfig(int port, final String address) {
     this.port = port;
     this.address = address;
   }
