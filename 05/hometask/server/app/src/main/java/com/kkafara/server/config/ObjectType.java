@@ -3,8 +3,6 @@ package com.kkafara.server.config;
 import com.google.gson.annotations.SerializedName;
 
 public enum ObjectType {
-  @SerializedName("controller")
-  Controller,
 
   @SerializedName("air-conditioner")
   AirConditioner,
