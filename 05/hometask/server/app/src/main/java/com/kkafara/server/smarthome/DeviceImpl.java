@@ -27,6 +27,10 @@ public abstract class DeviceImpl implements IDevice {
     );
   }
 
+  public String toString() {
+    return metadata.description;
+  }
+
   protected void setMetadata(DeviceMetadata metadata) {
     setDescription(metadata.description);
     setStatus(metadata.status);
