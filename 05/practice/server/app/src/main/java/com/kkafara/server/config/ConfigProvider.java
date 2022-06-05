@@ -1,5 +1,7 @@
 package com.kkafara.server.config;
 
+import com.kkafara.rt.Result;
+
 public interface ConfigProvider {
-  ChatServerConfig get();
+  Result<ChatServerConfig, Exception> get();
 }

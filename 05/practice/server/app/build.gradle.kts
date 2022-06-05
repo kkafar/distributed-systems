@@ -25,18 +25,18 @@ tasks.getByName<JavaExec>("run") {
 
 repositories {
     mavenCentral()
-    maven {
-        name = "GitHubPackages"
-        url = uri("https://maven.pkg.github.com/kkafar/result-type")
-        credentials {
-            username = System.getenv("GITHUB_USERNAME")
-            password = System.getenv("GITHUB_TOKEN")
-        }
-    }
 //    maven {
-//        name = "JFrogBintray"
-//        url = uri("https://kkafara.jfrog.io/artifactory/kkafara-gradle-release-local")
+//        name = "GitHubPackages"
+//        url = uri("https://maven.pkg.github.com/kkafar/result-type")
+//        credentials {
+//            username = System.getenv("GITHUB_USERNAME")
+//            password = System.getenv("GITHUB_TOKEN")
+//        }
 //    }
+    maven {
+        name = "JFrogBintray"
+        url = uri("https://kkafara.jfrog.io/artifactory/kkafara-gradle-release-local")
+    }
 }
 
 dependencies {
