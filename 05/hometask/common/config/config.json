@@ -1,0 +1,23 @@
+{
+	"servers": [
+		{
+			"name": "server-1",
+			"objects": [
+				{
+					"name": "AirConditioner",
+					"type": "air-conditioner"
+				},
+				{
+					"name": "TimedAirConditioner",
+					"type": "timed-air-conditioner"
+				}
+			]
+		},
+		{
+			"name": "server-2",
+			"objects": [
+
+			]
+		}
+	]
+}

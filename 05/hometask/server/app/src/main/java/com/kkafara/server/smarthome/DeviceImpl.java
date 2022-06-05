@@ -21,24 +21,24 @@ public abstract class DeviceImpl implements IDevice {
   public DeviceMetadata getMetadata(Current current) {
     logger.info(getTag() + "Returning metadata");
     return new DeviceMetadata(
-        metadata.description,
+        metadata.name,
         metadata.status,
         metadata.id
     );
   }
 
   public String toString() {
-    return metadata.description;
+    return metadata.name;
   }
 
   protected void setMetadata(DeviceMetadata metadata) {
-    setDescription(metadata.description);
+    setName(metadata.name);
     setStatus(metadata.status);
     this.metadata.id = metadata.id;
   }
 
-  protected void setDescription(String description) {
-    this.metadata.description = description != null ? description
+  protected void setName(String name) {
+    this.metadata.name = name != null ? name
         : "Device (not specified)";
   }
 
@@ -47,6 +47,6 @@ public abstract class DeviceImpl implements IDevice {
   }
 
   protected String getTag() {
-    return this.metadata.description + ": ";
+    return this.metadata.name + ": ";
   }
 }

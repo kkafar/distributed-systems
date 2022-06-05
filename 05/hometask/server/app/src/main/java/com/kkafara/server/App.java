@@ -5,9 +5,15 @@ package com.kkafara.server;
 
 import Smarthome.DeviceMetadata;
 import Smarthome.DeviceStatus;
+import com.kkafara.rt.Result;
+import com.kkafara.server.config.ConfigLoader;
+import com.kkafara.server.config.ServerConfig;
 import com.kkafara.server.smarthome.DeviceImpl;
 import com.kkafara.server.smarthome.DeviceRegistry;
 import com.kkafara.server.smarthome.airconditioning.AirConditionerImpl;
+import com.kkafara.server.smarthome.airconditioning.TimedAirConditionerImpl;
+import com.kkafara.server.smarthome.controller.SmartHomeControllerImpl;
+import com.kkafara.server.util.ObjectInflater;
 import com.zeroc.Ice.Communicator;
 import com.zeroc.Ice.ObjectAdapter;
 import com.zeroc.Ice.Util;
@@ -15,6 +21,10 @@ import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
+
+import java.nio.file.Path;
+import java.util.LinkedList;
+import java.util.List;
 
 public class App {
   private static final Logger logger = LogManager.getLogger(App.class);
@@ -24,19 +34,39 @@ public class App {
 
     logger.info("Starting application");
 
+    assert args[0] != null && !args[0].isBlank() : "No server name provided";
+
+    logger.info("Config path: " + System.getenv("CONFIG_DIR"));
+
+    Path configPath = Path.of(System.getenv("CONFIG_DIR") + "/config.json");
+    Result<ServerConfig, String> result = ConfigLoader.load(configPath, args[0]);
+
+    List<DeviceImpl> devices = new LinkedList<>();
+
+    result.ifOkOrElse(serverConfig -> {
+      serverConfig.getObjectList().forEach(objectConfig -> devices.add(ObjectInflater.inflate(objectConfig)));
+    }, err -> {
+      throw new RuntimeException(err);
+    });
+
     try (Communicator communicator = Util.initialize(args)) {
       // Create adapter
-      ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("SmartHomeAdapter", "default -p 10000");
+      ObjectAdapter adapter = communicator.createObjectAdapter("SmartHomeAdapter");
 
       DeviceRegistry registry = new DeviceRegistry();
 
       // Create servants
       registry.addDevices(
-        new AirConditionerImpl(new DeviceMetadata("AirConditioner", DeviceStatus.Off, 0),20)
+          devices
+//        new AirConditionerImpl(new DeviceMetadata("AirConditioner", DeviceStatus.Off, 0),20),
+//        new TimedAirConditionerImpl(new DeviceMetadata("TimedAirConditioner", DeviceStatus.Off, 1))
       );
+
+      SmartHomeControllerImpl controller = new SmartHomeControllerImpl(registry);
 
       // Add servants to adapter
       registry.acceptAdapter(adapter);
+      adapter.add(controller, Util.stringToIdentity("Controller"));
 
       // Run the adapter
       adapter.activate();

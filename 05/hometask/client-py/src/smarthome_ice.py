@@ -423,68 +423,68 @@ if '_t_DeviceList' not in _M_Smarthome.__dict__:
 _M_Smarthome.Controller = Ice.openModule('Smarthome.Controller')
 __name__ = 'Smarthome.Controller'
 
-_M_Smarthome.Controller._t_SmartHomeController = IcePy.defineValue('::Smarthome::Controller::SmartHomeController', Ice.Value, -1, (), False, True, None, ())
+_M_Smarthome.Controller._t_ISmartHomeController = IcePy.defineValue('::Smarthome::Controller::ISmartHomeController', Ice.Value, -1, (), False, True, None, ())
 
-if 'SmartHomeControllerPrx' not in _M_Smarthome.Controller.__dict__:
-    _M_Smarthome.Controller.SmartHomeControllerPrx = Ice.createTempClass()
-    class SmartHomeControllerPrx(Ice.ObjectPrx):
+if 'ISmartHomeControllerPrx' not in _M_Smarthome.Controller.__dict__:
+    _M_Smarthome.Controller.ISmartHomeControllerPrx = Ice.createTempClass()
+    class ISmartHomeControllerPrx(Ice.ObjectPrx):
 
         def getDevices(self, context=None):
-            return _M_Smarthome.Controller.SmartHomeController._op_getDevices.invoke(self, ((), context))
+            return _M_Smarthome.Controller.ISmartHomeController._op_getDevices.invoke(self, ((), context))
 
         def getDevicesAsync(self, context=None):
-            return _M_Smarthome.Controller.SmartHomeController._op_getDevices.invokeAsync(self, ((), context))
+            return _M_Smarthome.Controller.ISmartHomeController._op_getDevices.invokeAsync(self, ((), context))
 
         def begin_getDevices(self, _response=None, _ex=None, _sent=None, context=None):
-            return _M_Smarthome.Controller.SmartHomeController._op_getDevices.begin(self, ((), _response, _ex, _sent, context))
+            return _M_Smarthome.Controller.ISmartHomeController._op_getDevices.begin(self, ((), _response, _ex, _sent, context))
 
         def end_getDevices(self, _r):
-            return _M_Smarthome.Controller.SmartHomeController._op_getDevices.end(self, _r)
+            return _M_Smarthome.Controller.ISmartHomeController._op_getDevices.end(self, _r)
 
         @staticmethod
         def checkedCast(proxy, facetOrContext=None, context=None):
-            return _M_Smarthome.Controller.SmartHomeControllerPrx.ice_checkedCast(proxy, '::Smarthome::Controller::SmartHomeController', facetOrContext, context)
+            return _M_Smarthome.Controller.ISmartHomeControllerPrx.ice_checkedCast(proxy, '::Smarthome::Controller::ISmartHomeController', facetOrContext, context)
 
         @staticmethod
         def uncheckedCast(proxy, facet=None):
-            return _M_Smarthome.Controller.SmartHomeControllerPrx.ice_uncheckedCast(proxy, facet)
+            return _M_Smarthome.Controller.ISmartHomeControllerPrx.ice_uncheckedCast(proxy, facet)
 
         @staticmethod
         def ice_staticId():
-            return '::Smarthome::Controller::SmartHomeController'
-    _M_Smarthome.Controller._t_SmartHomeControllerPrx = IcePy.defineProxy('::Smarthome::Controller::SmartHomeController', SmartHomeControllerPrx)
+            return '::Smarthome::Controller::ISmartHomeController'
+    _M_Smarthome.Controller._t_ISmartHomeControllerPrx = IcePy.defineProxy('::Smarthome::Controller::ISmartHomeController', ISmartHomeControllerPrx)
 
-    _M_Smarthome.Controller.SmartHomeControllerPrx = SmartHomeControllerPrx
-    del SmartHomeControllerPrx
+    _M_Smarthome.Controller.ISmartHomeControllerPrx = ISmartHomeControllerPrx
+    del ISmartHomeControllerPrx
 
-    _M_Smarthome.Controller.SmartHomeController = Ice.createTempClass()
-    class SmartHomeController(Ice.Object):
+    _M_Smarthome.Controller.ISmartHomeController = Ice.createTempClass()
+    class ISmartHomeController(Ice.Object):
 
         def ice_ids(self, current=None):
-            return ('::Ice::Object', '::Smarthome::Controller::SmartHomeController')
+            return ('::Ice::Object', '::Smarthome::Controller::ISmartHomeController')
 
         def ice_id(self, current=None):
-            return '::Smarthome::Controller::SmartHomeController'
+            return '::Smarthome::Controller::ISmartHomeController'
 
         @staticmethod
         def ice_staticId():
-            return '::Smarthome::Controller::SmartHomeController'
+            return '::Smarthome::Controller::ISmartHomeController'
 
         def getDevices(self, current=None):
             raise NotImplementedError("servant method 'getDevices' not implemented")
 
         def __str__(self):
-            return IcePy.stringify(self, _M_Smarthome.Controller._t_SmartHomeControllerDisp)
+            return IcePy.stringify(self, _M_Smarthome.Controller._t_ISmartHomeControllerDisp)
 
         __repr__ = __str__
 
-    _M_Smarthome.Controller._t_SmartHomeControllerDisp = IcePy.defineClass('::Smarthome::Controller::SmartHomeController', SmartHomeController, (), None, ())
-    SmartHomeController._ice_type = _M_Smarthome.Controller._t_SmartHomeControllerDisp
+    _M_Smarthome.Controller._t_ISmartHomeControllerDisp = IcePy.defineClass('::Smarthome::Controller::ISmartHomeController', ISmartHomeController, (), None, ())
+    ISmartHomeController._ice_type = _M_Smarthome.Controller._t_ISmartHomeControllerDisp
 
-    SmartHomeController._op_getDevices = IcePy.Operation('getDevices', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), ((), _M_Smarthome._t_DeviceList, False, 0), ())
+    ISmartHomeController._op_getDevices = IcePy.Operation('getDevices', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), ((), _M_Smarthome._t_DeviceList, False, 0), ())
 
-    _M_Smarthome.Controller.SmartHomeController = SmartHomeController
-    del SmartHomeController
+    _M_Smarthome.Controller.ISmartHomeController = ISmartHomeController
+    del ISmartHomeController
 
 # End of module Smarthome.Controller
 

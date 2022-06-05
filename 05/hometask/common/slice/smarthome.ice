@@ -14,7 +14,7 @@ module Smarthome {
 	};
 
 	struct DeviceMetadata {
-		string description;
+		string name;
 		DeviceStatus status;
 		long id;
 	};

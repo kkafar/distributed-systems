@@ -1,16 +1,32 @@
+import os
 import sys
 import Ice
 import Smarthome
+import json
+
 
 def main():
     with Ice.initialize(sys.argv) as communicator:
-        base = communicator.stringToProxy("SmartHome:default -p 10000")
-        airConditioner = Smarthome.AirConditioning.IAirConditionerPrx.checkedCast(base)
+        config_dir = os.environ.get("CONFIG_DIR")
+        print(config_dir)
+        
+        
+        base = communicator.stringToProxy("AirConditioner:default -p 10000")
+        base_controller = communicator.stringToProxy("Controller:default -p 10000")
+        air_conditioner = Smarthome.AirConditioning.IAirConditionerPrx.checkedCast(base)
+        controller = Smarthome.Controller.ISmartHomeControllerPrx.checkedCast(base_controller)
 
-        if not airConditioner:
+
+        if not air_conditioner:
             raise RuntimeError("Invalid proxy")
         
-        airConditioner.setTargetTemp(25)
+        air_conditioner.setTargetTemp(-100)
+
+        devices = controller.getDevices()
+        
+        print(devices)
+        print(type(devices[0]))
+        print(type(devices[0].status))
 
 
 if __name__ == "__main__":
