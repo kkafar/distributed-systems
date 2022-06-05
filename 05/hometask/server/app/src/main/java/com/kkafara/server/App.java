@@ -3,6 +3,7 @@
  */
 package com.kkafara.server;
 
+import Smarthome.DeviceMetadata;
 import Smarthome.DeviceStatus;
 import com.kkafara.server.smarthome.airconditioning.AirConditionerImpl;
 import com.zeroc.Ice.Communicator;
@@ -26,9 +27,10 @@ public class App {
       ObjectAdapter adapter = communicator.createObjectAdapterWithEndpoints("SmartHomeAdapter", "default -p 10000");
 
       // Create servants
-      com.zeroc.Ice.Object object = new AirConditionerImpl("AirConditioner", DeviceStatus.Off, 0, 20);
-
-
+      com.zeroc.Ice.Object object = new AirConditionerImpl(
+          new DeviceMetadata("AirConditioner", DeviceStatus.Off, 0),
+          20
+      );
 
       // Add servants to adapter
       adapter.add(object, com.zeroc.Ice.Util.stringToIdentity("SmartHome"));

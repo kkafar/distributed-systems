@@ -10,26 +10,39 @@ import org.apache.logging.log4j.Logger;
 public abstract class DeviceImpl implements IDevice {
   private final Logger logger = LogManager.getLogger(DeviceImpl.class);
 
-  protected DeviceStatus status;
+  protected final DeviceMetadata metadata;
 
-  protected String description;
-
-  protected long id;
-
-  public DeviceImpl(String description, DeviceStatus status, long id) {
-    this.description = description != null ? description
-        : "Auto-generated description. This method needs to be overloaded in subclasses.";
-    this.status = status != null ? status : DeviceStatus.Unknown;
-    this.id = id;
+  public DeviceImpl(DeviceMetadata metadata) {
+    this.metadata = new DeviceMetadata();
+    setMetadata(metadata);
   }
 
   @Override
   public DeviceMetadata getMetadata(Current current) {
-    logger.info("Returning metadata for device with id: " + id);
+    logger.info(getTag() + "Returning metadata");
     return new DeviceMetadata(
-        description,
-        status,
-        id
+        metadata.description,
+        metadata.status,
+        metadata.id
     );
+  }
+
+  protected void setMetadata(DeviceMetadata metadata) {
+    setDescription(metadata.description);
+    setStatus(metadata.status);
+    this.metadata.id = metadata.id;
+  }
+
+  protected void setDescription(String description) {
+    this.metadata.description = description != null ? description
+        : "Device (not specified)";
+  }
+
+  protected void setStatus(DeviceStatus status) {
+    this.metadata.status = status != null ? status : DeviceStatus.Unknown;
+  }
+
+  protected String getTag() {
+    return this.metadata.description + ": ";
   }
 }
