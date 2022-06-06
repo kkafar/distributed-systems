@@ -158,14 +158,14 @@ if 'Time' not in _M_Smarthome.__dict__:
 if 'DeviceMetadata' not in _M_Smarthome.__dict__:
     _M_Smarthome.DeviceMetadata = Ice.createTempClass()
     class DeviceMetadata(object):
-        def __init__(self, description='', status=_M_Smarthome.DeviceStatus.On, id=0):
-            self.description = description
+        def __init__(self, name='', status=_M_Smarthome.DeviceStatus.On, id=0):
+            self.name = name
             self.status = status
             self.id = id
 
         def __hash__(self):
             _h = 0
-            _h = 5 * _h + Ice.getHash(self.description)
+            _h = 5 * _h + Ice.getHash(self.name)
             _h = 5 * _h + Ice.getHash(self.status)
             _h = 5 * _h + Ice.getHash(self.id)
             return _h % 0x7fffffff
@@ -176,13 +176,13 @@ if 'DeviceMetadata' not in _M_Smarthome.__dict__:
             elif not isinstance(other, _M_Smarthome.DeviceMetadata):
                 return NotImplemented
             else:
-                if self.description is None or other.description is None:
-                    if self.description != other.description:
-                        return (-1 if self.description is None else 1)
+                if self.name is None or other.name is None:
+                    if self.name != other.name:
+                        return (-1 if self.name is None else 1)
                 else:
-                    if self.description < other.description:
+                    if self.name < other.name:
                         return -1
-                    elif self.description > other.description:
+                    elif self.name > other.name:
                         return 1
                 if self.status is None or other.status is None:
                     if self.status != other.status:
@@ -250,7 +250,7 @@ if 'DeviceMetadata' not in _M_Smarthome.__dict__:
         __repr__ = __str__
 
     _M_Smarthome._t_DeviceMetadata = IcePy.defineStruct('::Smarthome::DeviceMetadata', DeviceMetadata, (), (
-        ('description', (), IcePy._t_string),
+        ('name', (), IcePy._t_string),
         ('status', (), _M_Smarthome._t_DeviceStatus),
         ('id', (), IcePy._t_long)
     ))
@@ -512,6 +512,18 @@ if 'IAirConditionerPrx' not in _M_Smarthome.AirConditioning.__dict__:
         def end_setTargetTemp(self, _r):
             return _M_Smarthome.AirConditioning.IAirConditioner._op_setTargetTemp.end(self, _r)
 
+        def getCurrentTemp(self, context=None):
+            return _M_Smarthome.AirConditioning.IAirConditioner._op_getCurrentTemp.invoke(self, ((), context))
+
+        def getCurrentTempAsync(self, context=None):
+            return _M_Smarthome.AirConditioning.IAirConditioner._op_getCurrentTemp.invokeAsync(self, ((), context))
+
+        def begin_getCurrentTemp(self, _response=None, _ex=None, _sent=None, context=None):
+            return _M_Smarthome.AirConditioning.IAirConditioner._op_getCurrentTemp.begin(self, ((), _response, _ex, _sent, context))
+
+        def end_getCurrentTemp(self, _r):
+            return _M_Smarthome.AirConditioning.IAirConditioner._op_getCurrentTemp.end(self, _r)
+
         @staticmethod
         def checkedCast(proxy, facetOrContext=None, context=None):
             return _M_Smarthome.AirConditioning.IAirConditionerPrx.ice_checkedCast(proxy, '::Smarthome::AirConditioning::IAirConditioner', facetOrContext, context)
@@ -544,6 +556,9 @@ if 'IAirConditionerPrx' not in _M_Smarthome.AirConditioning.__dict__:
         def setTargetTemp(self, temp, current=None):
             raise NotImplementedError("servant method 'setTargetTemp' not implemented")
 
+        def getCurrentTemp(self, current=None):
+            raise NotImplementedError("servant method 'getCurrentTemp' not implemented")
+
         def __str__(self):
             return IcePy.stringify(self, _M_Smarthome.AirConditioning._t_IAirConditionerDisp)
 
@@ -553,6 +568,7 @@ if 'IAirConditionerPrx' not in _M_Smarthome.AirConditioning.__dict__:
     IAirConditioner._ice_type = _M_Smarthome.AirConditioning._t_IAirConditionerDisp
 
     IAirConditioner._op_setTargetTemp = IcePy.Operation('setTargetTemp', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_float, False, 0),), (), None, (_M_Smarthome._t_ExecutionException,))
+    IAirConditioner._op_getCurrentTemp = IcePy.Operation('getCurrentTemp', Ice.OperationMode.Idempotent, Ice.OperationMode.Idempotent, False, None, (), (), (), ((), IcePy._t_float, False, 0), ())
 
     _M_Smarthome.AirConditioning.IAirConditioner = IAirConditioner
     del IAirConditioner
@@ -713,18 +729,6 @@ if 'ISmartAirConditionerPrx' not in _M_Smarthome.AirConditioning.__dict__:
         def end_turnOffEnergySavingMode(self, _r):
             return _M_Smarthome.AirConditioning.ISmartAirConditioner._op_turnOffEnergySavingMode.end(self, _r)
 
-        def getCurrentTemp(self, context=None):
-            return _M_Smarthome.AirConditioning.ISmartAirConditioner._op_getCurrentTemp.invoke(self, ((), context))
-
-        def getCurrentTempAsync(self, context=None):
-            return _M_Smarthome.AirConditioning.ISmartAirConditioner._op_getCurrentTemp.invokeAsync(self, ((), context))
-
-        def begin_getCurrentTemp(self, _response=None, _ex=None, _sent=None, context=None):
-            return _M_Smarthome.AirConditioning.ISmartAirConditioner._op_getCurrentTemp.begin(self, ((), _response, _ex, _sent, context))
-
-        def end_getCurrentTemp(self, _r):
-            return _M_Smarthome.AirConditioning.ISmartAirConditioner._op_getCurrentTemp.end(self, _r)
-
         @staticmethod
         def checkedCast(proxy, facetOrContext=None, context=None):
             return _M_Smarthome.AirConditioning.ISmartAirConditionerPrx.ice_checkedCast(proxy, '::Smarthome::AirConditioning::ISmartAirConditioner', facetOrContext, context)
@@ -760,9 +764,6 @@ if 'ISmartAirConditionerPrx' not in _M_Smarthome.AirConditioning.__dict__:
         def turnOffEnergySavingMode(self, current=None):
             raise NotImplementedError("servant method 'turnOffEnergySavingMode' not implemented")
 
-        def getCurrentTemp(self, current=None):
-            raise NotImplementedError("servant method 'getCurrentTemp' not implemented")
-
         def __str__(self):
             return IcePy.stringify(self, _M_Smarthome.AirConditioning._t_ISmartAirConditionerDisp)
 
@@ -773,7 +774,6 @@ if 'ISmartAirConditionerPrx' not in _M_Smarthome.AirConditioning.__dict__:
 
     ISmartAirConditioner._op_turnOnEnergySavingMode = IcePy.Operation('turnOnEnergySavingMode', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), None, ())
     ISmartAirConditioner._op_turnOffEnergySavingMode = IcePy.Operation('turnOffEnergySavingMode', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), None, ())
-    ISmartAirConditioner._op_getCurrentTemp = IcePy.Operation('getCurrentTemp', Ice.OperationMode.Idempotent, Ice.OperationMode.Idempotent, False, None, (), (), (), ((), IcePy._t_float, False, 0), ())
 
     _M_Smarthome.AirConditioning.ISmartAirConditioner = ISmartAirConditioner
     del ISmartAirConditioner
@@ -803,6 +803,18 @@ if 'IWaterHeaterPrx' not in _M_Smarthome.Heating.__dict__:
 
         def end_setWaterTempForTime(self, _r):
             return _M_Smarthome.Heating.IWaterHeater._op_setWaterTempForTime.end(self, _r)
+
+        def getCurrentTemp(self, context=None):
+            return _M_Smarthome.Heating.IWaterHeater._op_getCurrentTemp.invoke(self, ((), context))
+
+        def getCurrentTempAsync(self, context=None):
+            return _M_Smarthome.Heating.IWaterHeater._op_getCurrentTemp.invokeAsync(self, ((), context))
+
+        def begin_getCurrentTemp(self, _response=None, _ex=None, _sent=None, context=None):
+            return _M_Smarthome.Heating.IWaterHeater._op_getCurrentTemp.begin(self, ((), _response, _ex, _sent, context))
+
+        def end_getCurrentTemp(self, _r):
+            return _M_Smarthome.Heating.IWaterHeater._op_getCurrentTemp.end(self, _r)
 
         @staticmethod
         def checkedCast(proxy, facetOrContext=None, context=None):
@@ -836,6 +848,9 @@ if 'IWaterHeaterPrx' not in _M_Smarthome.Heating.__dict__:
         def setWaterTempForTime(self, temp, time, current=None):
             raise NotImplementedError("servant method 'setWaterTempForTime' not implemented")
 
+        def getCurrentTemp(self, current=None):
+            raise NotImplementedError("servant method 'getCurrentTemp' not implemented")
+
         def __str__(self):
             return IcePy.stringify(self, _M_Smarthome.Heating._t_IWaterHeaterDisp)
 
@@ -845,6 +860,7 @@ if 'IWaterHeaterPrx' not in _M_Smarthome.Heating.__dict__:
     IWaterHeater._ice_type = _M_Smarthome.Heating._t_IWaterHeaterDisp
 
     IWaterHeater._op_setWaterTempForTime = IcePy.Operation('setWaterTempForTime', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_float, False, 0), ((), _M_Smarthome._t_Time, True, 1)), (), None, (_M_Smarthome._t_ExecutionException,))
+    IWaterHeater._op_getCurrentTemp = IcePy.Operation('getCurrentTemp', Ice.OperationMode.Idempotent, Ice.OperationMode.Idempotent, False, None, (), (), (), ((), IcePy._t_float, False, 0), ())
 
     _M_Smarthome.Heating.IWaterHeater = IWaterHeater
     del IWaterHeater
@@ -874,6 +890,18 @@ if 'IOvenPrx' not in _M_Smarthome.Kitchen.__dict__:
 
         def end_preheat(self, _r):
             return _M_Smarthome.Kitchen.IOven._op_preheat.end(self, _r)
+
+        def getCurrentTemp(self, context=None):
+            return _M_Smarthome.Kitchen.IOven._op_getCurrentTemp.invoke(self, ((), context))
+
+        def getCurrentTempAsync(self, context=None):
+            return _M_Smarthome.Kitchen.IOven._op_getCurrentTemp.invokeAsync(self, ((), context))
+
+        def begin_getCurrentTemp(self, _response=None, _ex=None, _sent=None, context=None):
+            return _M_Smarthome.Kitchen.IOven._op_getCurrentTemp.begin(self, ((), _response, _ex, _sent, context))
+
+        def end_getCurrentTemp(self, _r):
+            return _M_Smarthome.Kitchen.IOven._op_getCurrentTemp.end(self, _r)
 
         @staticmethod
         def checkedCast(proxy, facetOrContext=None, context=None):
@@ -907,6 +935,9 @@ if 'IOvenPrx' not in _M_Smarthome.Kitchen.__dict__:
         def preheat(self, temp, current=None):
             raise NotImplementedError("servant method 'preheat' not implemented")
 
+        def getCurrentTemp(self, current=None):
+            raise NotImplementedError("servant method 'getCurrentTemp' not implemented")
+
         def __str__(self):
             return IcePy.stringify(self, _M_Smarthome.Kitchen._t_IOvenDisp)
 
@@ -916,6 +947,7 @@ if 'IOvenPrx' not in _M_Smarthome.Kitchen.__dict__:
     IOven._ice_type = _M_Smarthome.Kitchen._t_IOvenDisp
 
     IOven._op_preheat = IcePy.Operation('preheat', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_float, False, 0),), (), None, (_M_Smarthome._t_ExecutionException,))
+    IOven._op_getCurrentTemp = IcePy.Operation('getCurrentTemp', Ice.OperationMode.Idempotent, Ice.OperationMode.Idempotent, False, None, (), (), (), ((), IcePy._t_float, False, 0), ())
 
     _M_Smarthome.Kitchen.IOven = IOven
     del IOven
@@ -958,6 +990,18 @@ if 'IBlindsManagerPrx' not in _M_Smarthome.Lighting.__dict__:
         def end_undraw(self, _r):
             return _M_Smarthome.Lighting.IBlindsManager._op_undraw.end(self, _r)
 
+        def isDrawn(self, context=None):
+            return _M_Smarthome.Lighting.IBlindsManager._op_isDrawn.invoke(self, ((), context))
+
+        def isDrawnAsync(self, context=None):
+            return _M_Smarthome.Lighting.IBlindsManager._op_isDrawn.invokeAsync(self, ((), context))
+
+        def begin_isDrawn(self, _response=None, _ex=None, _sent=None, context=None):
+            return _M_Smarthome.Lighting.IBlindsManager._op_isDrawn.begin(self, ((), _response, _ex, _sent, context))
+
+        def end_isDrawn(self, _r):
+            return _M_Smarthome.Lighting.IBlindsManager._op_isDrawn.end(self, _r)
+
         @staticmethod
         def checkedCast(proxy, facetOrContext=None, context=None):
             return _M_Smarthome.Lighting.IBlindsManagerPrx.ice_checkedCast(proxy, '::Smarthome::Lighting::IBlindsManager', facetOrContext, context)
@@ -993,6 +1037,9 @@ if 'IBlindsManagerPrx' not in _M_Smarthome.Lighting.__dict__:
         def undraw(self, current=None):
             raise NotImplementedError("servant method 'undraw' not implemented")
 
+        def isDrawn(self, current=None):
+            raise NotImplementedError("servant method 'isDrawn' not implemented")
+
         def __str__(self):
             return IcePy.stringify(self, _M_Smarthome.Lighting._t_IBlindsManagerDisp)
 
@@ -1003,6 +1050,7 @@ if 'IBlindsManagerPrx' not in _M_Smarthome.Lighting.__dict__:
 
     IBlindsManager._op_draw = IcePy.Operation('draw', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), None, ())
     IBlindsManager._op_undraw = IcePy.Operation('undraw', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), None, ())
+    IBlindsManager._op_isDrawn = IcePy.Operation('isDrawn', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), ((), IcePy._t_bool, False, 0), ())
 
     _M_Smarthome.Lighting.IBlindsManager = IBlindsManager
     del IBlindsManager
@@ -1024,6 +1072,18 @@ if 'IPartialDrawBlindsManagerPrx' not in _M_Smarthome.Lighting.__dict__:
 
         def end_drawTo(self, _r):
             return _M_Smarthome.Lighting.IPartialDrawBlindsManager._op_drawTo.end(self, _r)
+
+        def getDrawLevel(self, context=None):
+            return _M_Smarthome.Lighting.IPartialDrawBlindsManager._op_getDrawLevel.invoke(self, ((), context))
+
+        def getDrawLevelAsync(self, context=None):
+            return _M_Smarthome.Lighting.IPartialDrawBlindsManager._op_getDrawLevel.invokeAsync(self, ((), context))
+
+        def begin_getDrawLevel(self, _response=None, _ex=None, _sent=None, context=None):
+            return _M_Smarthome.Lighting.IPartialDrawBlindsManager._op_getDrawLevel.begin(self, ((), _response, _ex, _sent, context))
+
+        def end_getDrawLevel(self, _r):
+            return _M_Smarthome.Lighting.IPartialDrawBlindsManager._op_getDrawLevel.end(self, _r)
 
         @staticmethod
         def checkedCast(proxy, facetOrContext=None, context=None):
@@ -1057,6 +1117,9 @@ if 'IPartialDrawBlindsManagerPrx' not in _M_Smarthome.Lighting.__dict__:
         def drawTo(self, percent, current=None):
             raise NotImplementedError("servant method 'drawTo' not implemented")
 
+        def getDrawLevel(self, current=None):
+            raise NotImplementedError("servant method 'getDrawLevel' not implemented")
+
         def __str__(self):
             return IcePy.stringify(self, _M_Smarthome.Lighting._t_IPartialDrawBlindsManagerDisp)
 
@@ -1066,6 +1129,7 @@ if 'IPartialDrawBlindsManagerPrx' not in _M_Smarthome.Lighting.__dict__:
     IPartialDrawBlindsManager._ice_type = _M_Smarthome.Lighting._t_IPartialDrawBlindsManagerDisp
 
     IPartialDrawBlindsManager._op_drawTo = IcePy.Operation('drawTo', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (((), IcePy._t_float, False, 0),), (), None, (_M_Smarthome._t_ExecutionException,))
+    IPartialDrawBlindsManager._op_getDrawLevel = IcePy.Operation('getDrawLevel', Ice.OperationMode.Normal, Ice.OperationMode.Normal, False, None, (), (), (), ((), IcePy._t_float, False, 0), ())
 
     _M_Smarthome.Lighting.IPartialDrawBlindsManager = IPartialDrawBlindsManager
     del IPartialDrawBlindsManager

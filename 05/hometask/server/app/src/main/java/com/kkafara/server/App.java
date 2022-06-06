@@ -44,6 +44,7 @@ public class App {
     List<DeviceImpl> devices = new LinkedList<>();
 
     result.ifOkOrElse(serverConfig -> {
+      // Create servants
       serverConfig.getObjectList().forEach(objectConfig -> devices.add(ObjectInflater.inflate(objectConfig)));
     }, err -> {
       throw new RuntimeException(err);
@@ -55,12 +56,8 @@ public class App {
 
       DeviceRegistry registry = new DeviceRegistry();
 
-      // Create servants
-      registry.addDevices(
-          devices
-//        new AirConditionerImpl(new DeviceMetadata("AirConditioner", DeviceStatus.Off, 0),20),
-//        new TimedAirConditionerImpl(new DeviceMetadata("TimedAirConditioner", DeviceStatus.Off, 1))
-      );
+      // Register servants
+      registry.addDevices(devices);
 
       SmartHomeControllerImpl controller = new SmartHomeControllerImpl(registry);
 

@@ -40,6 +40,7 @@ module Smarthome {
 	module AirConditioning {
 		interface IAirConditioner extends IDeviceStatusController {
 			void setTargetTemp(float temp) throws ExecutionException;
+			idempotent float getCurrentTemp();
 		}
 
 		interface IZoneAirConditioner extends IAirConditioner {
@@ -53,19 +54,20 @@ module Smarthome {
 		interface ISmartAirConditioner extends IZoneAirConditioner, ITimedAirConditioner {
 			void turnOnEnergySavingMode();
 			void turnOffEnergySavingMode();
-			idempotent float getCurrentTemp();
 		};
 	};
 
 	module Heating {
 		interface IWaterHeater extends IDeviceStatusController {
 			void setWaterTempForTime(float temp, optional(1) Time time) throws ExecutionException;
+			idempotent float getCurrentTemp();
 		};
 	};
 
 	module Kitchen {
 		interface IOven extends IDeviceStatusController {
 			void preheat(float temp) throws ExecutionException;
+			idempotent float getCurrentTemp();
 		};
 	};
 
@@ -73,10 +75,12 @@ module Smarthome {
 		interface IBlindsManager extends IDeviceStatusController {
 			void draw();
 			void undraw();
+			bool isDrawn();
 		};
 
 		interface IPartialDrawBlindsManager extends IDeviceStatusController {
 			void drawTo(float percent) throws ExecutionException;
+			float getDrawLevel();
 		};
 	};
 }

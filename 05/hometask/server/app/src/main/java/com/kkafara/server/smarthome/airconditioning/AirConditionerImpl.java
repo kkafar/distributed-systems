@@ -40,4 +40,9 @@ public class AirConditionerImpl extends DeviceControllerImpl implements IAirCond
     }
     temperature = temp;
   }
+
+  @Override
+  public float getCurrentTemp(Current current) {
+    return temperature;
+  }
 }

@@ -2,21 +2,55 @@
 	"servers": [
 		{
 			"name": "server-1",
+			"port": 10000,
 			"objects": [
 				{
 					"name": "AirConditioner",
-					"type": "air-conditioner"
+					"type": "air-conditioner",
+					"temperature": 30,
+					"status": "On"
 				},
 				{
 					"name": "TimedAirConditioner",
 					"type": "timed-air-conditioner"
+				},
+				{
+					"name": "SmartAirConditioner-1",
+					"type": "smart-air-conditioner",
+					"zones": [0, 1, 2],
+					"temperature": 21,
+					"enery-save-mode": true,
+					"status": "On"
+				},
+				{
+					"name": "SmartAirConditioner-2",
+					"type": "smart-air-conditioner",
+					"zones": [2, 3, 4],
+					"temperature": 22,
+					"enery-save-mode": false
+				},
+				{
+					"name": "PartialDrawBlindsManager",
+					"type": "partial-draw-blinds-manager",
+					"percent": 0.3
 				}
 			]
 		},
 		{
 			"name": "server-2",
+			"port": 10001,
 			"objects": [
-
+				{
+					"name": "Oven",
+					"type": "oven",
+					"temperature": 21
+				},
+				{
+					"name": "WaterHeater",
+					"type": "water-heater",
+					"temperature": 50,
+					"status": "On"
+				}
 			]
 		}
 	]
