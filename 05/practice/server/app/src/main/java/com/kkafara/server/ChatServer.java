@@ -1,9 +1,12 @@
 package com.kkafara.server;
 
 import com.kkafara.server.config.ChatServerConfig;
-import com.kkafara.server.grpc.HelloServiceImpl;
+import com.kkafara.server.grpc.CounterServiceImpl;
+import com.kkafara.server.grpc.IssueTrackerImpl;
+import com.kkafara.server.grpc.TimeServiceImpl;
 import io.grpc.Server;
 import io.grpc.netty.shaded.io.grpc.netty.NettyServerBuilder;
+import io.grpc.protobuf.services.ProtoReflectionService;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -18,7 +21,10 @@ public class ChatServer {
     server = NettyServerBuilder
         .forPort(config.port)
         .executor(Executors.newFixedThreadPool(4))
-        .addService(new HelloServiceImpl())
+        .addService(new TimeServiceImpl())
+        .addService(new CounterServiceImpl())
+        .addService(new IssueTrackerImpl())
+        .addService(ProtoReflectionService.newInstance())
         .build();
   }
 

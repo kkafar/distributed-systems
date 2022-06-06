@@ -4,15 +4,54 @@ option java_multiple_files = true;
 
 package com.kkafara.server.grpc;
 
-message HelloRequest {
-  string firstName = 1;
-  string lastName = 2;
+message TimeRequest {
 }
 
-message HelloResponse {
-  string greeting = 1;
+message TimeResponse {
+  int32 hour = 1;
+  int32 min = 2;
 }
 
-service HelloService {
-  rpc hello (HelloRequest) returns (HelloResponse) {}
+message CountRequest {
+  repeated int32 numbers = 1;
+}
+
+message CountResponse {
+  repeated int32 numbers = 1;
+  int32 count = 2;
+}
+
+message Issue {
+  int32 importance = 1;
+  string description = 2;
+
+  enum Category {
+    New = 0;
+    Known = 1;
+  }
+
+  Category category = 3;
+
+  message AuthorData {
+    string name = 1;
+    string email = 2;
+  }
+
+  AuthorData authorData = 4;
+}
+
+message IssueConfirmation {
+  bool confirmed = 1;
+}
+
+service IssueTracker {
+  rpc Submit (Issue) returns (IssueConfirmation);
+}
+
+service TimeService {
+  rpc GetTime (TimeRequest) returns (TimeResponse);
+}
+
+service CounterService {
+  rpc Count (CountRequest) returns (CountResponse);
 }

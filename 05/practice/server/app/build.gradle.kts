@@ -25,14 +25,6 @@ tasks.getByName<JavaExec>("run") {
 
 repositories {
     mavenCentral()
-//    maven {
-//        name = "GitHubPackages"
-//        url = uri("https://maven.pkg.github.com/kkafar/result-type")
-//        credentials {
-//            username = System.getenv("GITHUB_USERNAME")
-//            password = System.getenv("GITHUB_TOKEN")
-//        }
-//    }
     maven {
         name = "JFrogBintray"
         url = uri("https://kkafara.jfrog.io/artifactory/kkafara-gradle-release-local")
@@ -46,6 +38,7 @@ dependencies {
 
     implementation("io.grpc:grpc-protobuf:1.46.0")
     implementation("io.grpc:grpc-stub:1.46.0")
+    implementation("io.grpc:grpc-services:1.46.0")
     implementation("io.netty:netty-all:4.1.77.Final")
     implementation("io.grpc:grpc-netty-shaded:1.46.0")
 
