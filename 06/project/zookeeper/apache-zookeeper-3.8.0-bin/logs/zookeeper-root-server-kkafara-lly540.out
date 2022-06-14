@@ -1,10 +1,10 @@
-2022-06-14 13:55:47,493 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@177] - Reading configuration from: conf/1/zoo.cfg
-2022-06-14 13:55:47,494 [myid:] - WARN  [main:o.a.z.s.u.VerifyingFileFactory@65] - conf/1/zoo.cfg is relative. Prepend ./ to indicate that you're sure!
-2022-06-14 13:55:47,497 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@440] - clientPortAddress is 0.0.0.0:2181
-2022-06-14 13:55:47,497 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@444] - secureClientPort is not set
-2022-06-14 13:55:47,497 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@460] - observerMasterPort is not set
-2022-06-14 13:55:47,498 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@477] - metricsProvider.className is org.apache.zookeeper.metrics.impl.DefaultMetricsProvider
-2022-06-14 13:55:47,502 [myid:] - ERROR [main:o.a.z.s.q.QuorumPeerMain@99] - Invalid config, exiting abnormally
+2022-06-14 13:57:39,799 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@177] - Reading configuration from: conf/1/zoo.cfg
+2022-06-14 13:57:39,800 [myid:] - WARN  [main:o.a.z.s.u.VerifyingFileFactory@65] - conf/1/zoo.cfg is relative. Prepend ./ to indicate that you're sure!
+2022-06-14 13:57:39,803 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@440] - clientPortAddress is 0.0.0.0:2181
+2022-06-14 13:57:39,804 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@444] - secureClientPort is not set
+2022-06-14 13:57:39,804 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@460] - observerMasterPort is not set
+2022-06-14 13:57:39,804 [myid:] - INFO  [main:o.a.z.s.q.QuorumPeerConfig@477] - metricsProvider.className is org.apache.zookeeper.metrics.impl.DefaultMetricsProvider
+2022-06-14 13:57:39,808 [myid:] - ERROR [main:o.a.z.s.q.QuorumPeerMain@99] - Invalid config, exiting abnormally
 org.apache.zookeeper.server.quorum.QuorumPeerConfig$ConfigException: Error processing conf/1/zoo.cfg
 	at org.apache.zookeeper.server.quorum.QuorumPeerConfig.parse(QuorumPeerConfig.java:198)
 	at org.apache.zookeeper.server.quorum.QuorumPeerMain.initializeAndRun(QuorumPeerMain.java:125)
@@ -16,5 +16,5 @@ Caused by: java.lang.IllegalArgumentException: myid file is missing
 	at org.apache.zookeeper.server.quorum.QuorumPeerConfig.parse(QuorumPeerConfig.java:194)
 	... 2 common frames omitted
 Invalid config, exiting abnormally
-2022-06-14 13:55:47,502 [myid:] - INFO  [main:o.a.z.a.ZKAuditProvider@42] - ZooKeeper audit is disabled.
-2022-06-14 13:55:47,503 [myid:] - ERROR [main:o.a.z.u.ServiceUtils@42] - Exiting JVM with code 2
+2022-06-14 13:57:39,809 [myid:] - INFO  [main:o.a.z.a.ZKAuditProvider@42] - ZooKeeper audit is disabled.
+2022-06-14 13:57:39,809 [myid:] - ERROR [main:o.a.z.u.ServiceUtils@42] - Exiting JVM with code 2
