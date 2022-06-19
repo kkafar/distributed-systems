@@ -1,5 +1,6 @@
 package com.kkafara.watcher;
 
+import org.apache.commons.exec.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.zookeeper.KeeperException;
@@ -8,7 +9,6 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
 import java.io.IOException;
-import java.util.Optional;
 
 public class Executor implements Watcher, Runnable, DataMonitorListener {
 
@@ -21,9 +21,10 @@ public class Executor implements Watcher, Runnable, DataMonitorListener {
   private ZooKeeper zookeeper;
   private DataMonitor dataMonitor;
 
-  Process guiProcess;
+  private org.apache.commons.exec.Executor processExecutor = new DefaultExecutor();
+  private ExecuteWatchdog processWatchdog = null;
 
-  public Executor(String hostPort, String znode, String executable) throws KeeperException, IOException {
+  public Executor(String hostPort, String znode, String executable) throws KeeperException, IOException, InterruptedException {
     this.hostPort = hostPort;
     this.znode = znode;
     this.executable = executable;
@@ -59,18 +60,41 @@ public class Executor implements Watcher, Runnable, DataMonitorListener {
   }
 
   @Override
-  public void exists(byte[] data) {
-    if (data == null) {
-      logger.info("Shutting down process if present");
-      Optional.ofNullable(guiProcess).ifPresent(process -> guiProcess.destroy());
-    } else {
-      try {
-        logger.info("Starting process");
-        guiProcess = Runtime.getRuntime().exec(executable);
-      } catch (IOException ex) {
-        Optional.ofNullable(ex.getMessage()).ifPresent(logger::info);
-        ex.printStackTrace();
-      }
+  public void onZNodeCreated(WatchedEvent event) {
+    logger.info("Notified of node created event");
+    try {
+      logger.info("Starting drawing program");
+      CommandLine cmdLine = CommandLine.parse(executable);
+      DefaultExecuteResultHandler resultHandler = new DefaultExecuteResultHandler();
+      processWatchdog = new ExecuteWatchdog(60 * 60 * 1000);
+      processExecutor.setWatchdog(processWatchdog);
+      processExecutor.execute(cmdLine, resultHandler);
+    } catch (IOException e) {
+      logger.warn("Failed while running the graphical application process");
+      e.printStackTrace();
     }
   }
+
+  @Override
+  public void onZNodeDeleted(WatchedEvent event) {
+    logger.info("Notified of node deleted event.");
+    if (processWatchdog != null) {
+      logger.info("Shutting down drawing program");
+      processWatchdog.destroyProcess();
+      processWatchdog = null;
+    } else {
+      logger.info("No qui process active");
+    }
+  }
+
+  @Override
+  public void onChildrenChange(WatchedEvent event) {
+    logger.info("Notified of children change");
+  }
+
+  @Override
+  public void onChildAdded(WatchedEvent event) {
+    logger.info("Notified of child added event");
+  }
 }
+

@@ -3,12 +3,10 @@ package com.kkafara.watcher;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.zookeeper.*;
-import org.apache.zookeeper.data.Stat;
 
 import java.nio.file.Path;
-import java.util.Optional;
 
-public class DataMonitor implements Watcher, AsyncCallback.StatCallback {
+public class DataMonitor implements Watcher {
 
   private final Logger logger = LogManager.getLogger(DataMonitor.class);
   private ZooKeeper zooKeeper;
@@ -16,77 +14,66 @@ public class DataMonitor implements Watcher, AsyncCallback.StatCallback {
   private Watcher watcher;
   private DataMonitorListener listener;
   boolean dead;
+  private ChildrenNumberHandler childrenNumberHandler;
+  private ZNodeTreePrinter treePrinter;
 
-  public DataMonitor(ZooKeeper zooKeeper, String znode, Watcher watcher, DataMonitorListener listener) {
+  public DataMonitor(ZooKeeper zooKeeper, String znode, Watcher watcher, DataMonitorListener listener) throws InterruptedException, KeeperException {
     this.zooKeeper = zooKeeper;
     this.znode = znode;
     this.watcher = watcher;
     this.listener = listener;
-    this.zooKeeper.exists(znode, true, this, null);
+    this.childrenNumberHandler = new ChildrenNumberHandler();
+    this.treePrinter = new ZNodeTreePrinter(zooKeeper);
+
+
+    // register persistent watch for events
+    this.zooKeeper.addWatch(znode, this, AddWatchMode.PERSISTENT_RECURSIVE);
   }
 
-  public void process(WatchedEvent event) {
-    Path path = event.getPath() != null ? Path.of(event.getPath()) : null;
 
-    if (event.getType() == Watcher.Event.EventType.None) {
-      logger.info("Notified of None event. Doing nothing");
-    } else {
-      if (path != null && path.toString().equals(znode)) {
-        zooKeeper.exists(znode, true, this, null);
-      }
+  public void process(WatchedEvent event) {
+    logger.info("DataMonitor notified of event: " + event.toString());
+
+    Path path = event.getPath() != null ? Path.of(event.getPath()) : null;
+    logger.info("Node path: " + (path != null ? path.toString() : " undefined"));
+
+    if (path == null) {
+      logger.warn("Null node path in received event; interrupting event processing");
+      return;
     }
-    if (watcher != null) {
-      watcher.process(event);
+
+    logger.info("Event type: " + event.getType().toString());
+    switch (event.getType()) {
+      case NodeCreated -> {
+        if (path.toString().equals(znode)) {
+          logger.info("Reacting to creation of /z node");
+          listener.onZNodeCreated(event);
+        } else {
+          logger.info("Node different to " + znode + " was created");
+          listener.onChildAdded(event);
+          logger.info("Delegating child number request to zookeeper with callback to childrenNumberHandler");
+          zooKeeper.getAllChildrenNumber(znode, childrenNumberHandler, null);
+          logger.info("Delegating child print request to TreePrinter via zookeeper getChildren request");
+          zooKeeper.getChildren(znode, false, treePrinter, null);
+        }
+      }
+      case NodeDeleted -> {
+        if (path.toString().equals(znode)) {
+          logger.info("Reacting to deletion of /z node");
+          listener.onZNodeDeleted(event);
+        } else {
+          logger.info("Node different to " + znode + " was deleted");
+        }
+      }
+      case NodeChildrenChanged -> {
+        logger.info("Reacting to children change");
+        listener.onChildrenChange(event);
+      }
+      default -> logger.info("Unhandled event type: " + event.getType().toString());
     }
   }
 
   public boolean isDead() {
     return dead;
-  }
-
-  @Override
-  public void processResult(int rc, String path, Object ctx, Stat stat) {
-    logger.info("Processing result");
-    boolean exists;
-    switch (KeeperException.Code.get(rc)) {
-      case OK: {
-        logger.info("OK");
-        exists = true;
-//        zooKeeper.exists(znode, true, this, null);
-        break;
-      }
-      case NONODE: {
-        logger.info("NONODE");
-        exists = false;
-        break;
-      }
-      case NOAUTH:
-      case SESSIONEXPIRED: {
-        logger.info("NOAUTH || SESSIONEXPIRED");
-       dead = true;
-//       listener
-        return;
-      }
-      default: {
-        logger.info("DEFAULT");
-        zooKeeper.exists(znode, true, this, null);
-        return;
-      }
-    }
-
-    byte[] b = null;
-    if (exists) {
-      try {
-        b = zooKeeper.getData(znode, false, null);
-      } catch (KeeperException ex) {
-        Optional.ofNullable(ex.getMessage()).ifPresent(logger::error);
-        ex.printStackTrace();
-      } catch (InterruptedException ex) {
-        Optional.ofNullable(ex.getMessage()).ifPresent(logger::error);
-        ex.printStackTrace();
-        return;
-      }
-      listener.exists(b);
-    }
   }
 }
