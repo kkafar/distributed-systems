@@ -8,6 +8,7 @@ import org.apache.zookeeper.Watcher;
 import org.apache.zookeeper.ZooKeeper;
 
 import java.io.IOException;
+import java.util.Optional;
 
 public class Executor implements Watcher, Runnable, DataMonitorListener {
 
@@ -32,6 +33,7 @@ public class Executor implements Watcher, Runnable, DataMonitorListener {
 
   @Override
   public void process(WatchedEvent event) {
+    logger.info("Notified of event " + event.toString());
     dataMonitor.process(event);
   }
 
@@ -39,7 +41,9 @@ public class Executor implements Watcher, Runnable, DataMonitorListener {
     try {
       synchronized (this) {
         while (!dataMonitor.isDead()) {
+          logger.info("Waiting...");
           wait();
+          logger.info("Woke up!");
         }
       }
     } catch (InterruptedException ex) {
@@ -48,8 +52,25 @@ public class Executor implements Watcher, Runnable, DataMonitorListener {
     }
   }
 
+  public void closing() {
+    synchronized (this) {
+      notifyAll();
+    }
+  }
+
   @Override
   public void exists(byte[] data) {
-
+    if (data == null) {
+      logger.info("Shutting down process if present");
+      Optional.ofNullable(guiProcess).ifPresent(process -> guiProcess.destroy());
+    } else {
+      try {
+        logger.info("Starting process");
+        guiProcess = Runtime.getRuntime().exec(executable);
+      } catch (IOException ex) {
+        Optional.ofNullable(ex.getMessage()).ifPresent(logger::info);
+        ex.printStackTrace();
+      }
+    }
   }
 }
